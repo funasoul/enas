@@ -10,6 +10,47 @@ Authors: Hieu Pham*, Melody Y. Guan*, Barret Zoph, Quoc V. Le, Jeff Dean
 
 _This is not an official Google product._
 
+## For Reproducibility
+Tested on the following environment.
+
+name | version
+-- | --
+conda          | 4.11.0
+python         | 2.7 (no python 3 support)
+cudatoolkit    | 10.0.130 
+tensorflow-gpu | 1.15.0 (no Tensorflow 2 support)
+
+## Quick start
+```sh
+## create anaconda environment with python 2.7
+% conda create -n enas python=2.7
+% conda activate enas
+
+## install tensorflow-gpu 1.15
+(enas)% conda install -c conda-forge tensorflow-gpu=1.15
+
+## clone this repository
+(enas)% cd ~/git
+(enas)% git clone git@github.com:funasoul/enas.git
+
+## download CIFAR10
+(enas)% cd enas
+(enas)% curl -O https://www.cs.toronto.edu/\~kriz/cifar-10-python.tar.gz
+(enas)% tar xvzf cifar-10-python.tar.gz
+(enas)% mv cifar-10-batches-py data/cifar10
+
+## run the example code (ex. id:0)
+(enas)% CUDA_VISIBLE_DEVICES=0 ./scripts/cifar10_micro_search.sh
+
+## if you want to specify your GPU device (ex. id:1)
+(enas)% vim src/cifar10/general_child.py   # replace "tf.device("/gpu:0"):" with "tf.device("/device:gpu:1"):" 
+(enas)% vim src/cifar10/micro_child.py     # replace "tf.device("/gpu:0"):" with "tf.device("/device:gpu:1"):" 
+(enas)% vim src/cifar10/models.py          # replace "tf.device("/gpu:0"):" with "tf.device("/device:gpu:1"):" 
+(enas)% vim src/ptb/data_utils.py          # replace "tf.device("/gpu:0"):" with "tf.device("/device:gpu:1"):" 
+
+(enas)% CUDA_VISIBLE_DEVICES=1 ./scripts/cifar10_micro_search.sh  # don't forget to specify your device id!
+```
+
 ## Penn Treebank
 
 **IMPORTANT ERRATA**: The implementation of Language Model on this repository is wrong. Please do not use it. The correct implementation is at the [new repository](https://github.com/google-research/google-research/tree/master/enas_lm). We apologize for the inconvenience.
